@@ -3,22 +3,22 @@ import Type from "./Type.js";
 class GUI {
     constructor() {
         this.type = Type.XHR;
+        this.output = document.getElementById("output");
     }
     showTable(result) {
         if (result) {
             document.getElementById("input").className = "hide";
-            document.getElementById("output").className = "show";
+            this.output.className = "show";
         } else {
             document.getElementById("input").className = "show";
-            document.getElementById("output").className = "hide";
+            this.output.className = "hide";
         }
     }
     printVotes(votes) {
         let total = votes.reduce((a, b) => a + b.votes, 0);
-        let output = document.getElementById("output");
         for (let i = 0; i < votes.length; i++) {
             let vote = votes[i].votes;
-            let li = output.getElementsByTagName("li").item(i);
+            let li = this.output.getElementsByTagName("li").item(i);
             let spans = li.getElementsByTagName("span");
             spans[0].innerHTML = vote + ((vote === 1) ? " vote" : " votes");
             let meter = li.querySelector("meter");
@@ -71,7 +71,7 @@ class GUI {
                 let xhr = new XMLHttpRequest();
                 xhr.onload = () => this.printVotes(JSON.parse(xhr.responseText));
                 xhr.open("get", "survey");
-                xhr.send(null);
+                xhr.send();
             }
         }
     }
@@ -106,7 +106,7 @@ class GUI {
         again.onclick = this.voteAgain.bind(this);
         let results = document.getElementById("results");
         results.onclick = this.showResults.bind(this);
-        document.getElementById("output").className = "hide";
+        this.output.className = "hide";
         this.getKeys();
     }
 }
