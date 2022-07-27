@@ -1,0 +1,21 @@
+ul {
+    list-style-type: none;
+}
+
+fieldset {
+    width: 25em;
+    margin: 0 auto;
+    padding: 2em;
+}
+
+legend {
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
