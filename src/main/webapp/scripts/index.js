@@ -14,13 +14,12 @@ class GUI {
             this.output.className = "hide";
         }
     }
-    printVotes(votes) {
-        let total = votes.reduce((a, b) => a + b.votes, 0);
+    printVotes(list) {
+        let total = list.reduce((a, b) => a + b.votes, 0);
         let out = "";
-        for (let vote of votes) {
-            let key = vote.key;
-            let qtt = vote.votes + ((vote.votes === 1) ? " vote" : " votes");
-            let perc = (total === 0) ? 0 : (vote.votes / total);
+        for (let {key, votes} of list) {
+            let qtt = votes + ((votes === 1) ? " vote" : " votes");
+            let perc = (total === 0) ? 0 : (votes / total);
             let percStr = Intl.NumberFormat('pt-br', { style: 'percent' }).format(perc);
             out += `<tr><td>${key}</td><td><meter min="0" max="1" value="${perc}">&nbsp;</meter></td><td>${percStr}</td><td>${qtt}</td></tr>`;
         }
