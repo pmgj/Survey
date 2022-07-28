@@ -1,5 +1,3 @@
-import Type from "./Type.js";
-
 class GUI {
     constructor() {
         this.type = Type.XHR;
@@ -17,7 +15,7 @@ class GUI {
     printVotes(list) {
         let total = list.reduce((a, b) => a + b.votes, 0);
         let out = "";
-        for (let {key, votes} of list) {
+        for (let { key, votes } of list) {
             let qtt = votes + ((votes === 1) ? " vote" : " votes");
             let perc = (total === 0) ? 0 : (votes / total);
             let percStr = Intl.NumberFormat('pt-br', { style: 'percent' }).format(perc);
@@ -32,15 +30,7 @@ class GUI {
         }
     }
     sendData() {
-        if (this.type === Type.FETCH) {
-            window.fetch(`survey`, { method: 'post', body: new FormData(document.forms[0]) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
-        } else {
-            let xhr = new XMLHttpRequest();
-            xhr.onload = () => this.printVotes(JSON.parse(xhr.responseText));
-            let params = new FormData(document.forms[0]);
-            xhr.open("post", "survey");
-            xhr.send(params);
-        }
+        window.fetch(`survey`, { method: 'post', body: new FormData(document.forms[0]) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     validate(evt) {
         evt.preventDefault();
@@ -63,14 +53,7 @@ class GUI {
         if (total > 0) {
             this.showTable(true);
         } else {
-            if (this.type === Type.FETCH) {
-                window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
-            } else {
-                let xhr = new XMLHttpRequest();
-                xhr.onload = () => this.printVotes(JSON.parse(xhr.responseText));
-                xhr.open("get", "survey");
-                xhr.send();
-            }
+            window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
         }
     }
     populateOptions(items) {
@@ -82,14 +65,7 @@ class GUI {
         input.innerHTML = lii;
     }
     getKeys() {
-        if (this.type === Type.FETCH) {
-            window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
-        } else {
-            let xhr = new XMLHttpRequest();
-            xhr.onload = () => this.populateOptions(JSON.parse(xhr.responseText));
-            xhr.open("get", "survey");
-            xhr.send();
-        }
+        window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
     }
     registerEvents() {
         let form = document.forms[0];
