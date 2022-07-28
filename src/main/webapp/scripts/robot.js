@@ -4,11 +4,12 @@ class Robot {
         this.t = null;
         this.options = null;
         this.option = document.getElementById("vote");
+        this.STOP = "Stop";
     }
     voting() {
         let opt = this.option.value;
         let msg = document.getElementById("message");
-        if (opt === "Stop") {
+        if (opt === this.STOP) {
             let str = "Voting";
             str += (this.dot % 3 === 0) ? "." : (this.dot % 3 === 1) ? ".." : "...";
             msg.innerHTML = str;
@@ -32,11 +33,11 @@ class Robot {
     }
     execute() {
         let opcao = this.option.value;
-        if (opcao === "Stop") {
+        if (opcao === this.STOP) {
             this.option.value = "Vote";
             clearInterval(this.t);
         } else {
-            this.option.value = "Stop";
+            this.option.value = this.STOP;
             this.vote();
             let voto = document.getElementById("time").value;
             this.t = setInterval(this.vote.bind(this), parseInt(voto) * 1000);

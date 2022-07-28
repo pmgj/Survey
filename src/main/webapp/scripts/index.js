@@ -3,7 +3,7 @@ import Type from "./Type.js";
 class GUI {
     constructor() {
         this.type = Type.XHR;
-        this.output = document.getElementById("output");
+        this.output = document.querySelector("#output");
     }
     showTable(result) {
         if (result) {
@@ -16,16 +16,15 @@ class GUI {
     }
     printVotes(votes) {
         let total = votes.reduce((a, b) => a + b.votes, 0);
-        for (let i = 0; i < votes.length; i++) {
-            let vote = votes[i].votes;
-            let li = this.output.getElementsByTagName("li").item(i);
-            let spans = li.getElementsByTagName("span");
-            spans[0].innerHTML = vote + ((vote === 1) ? " vote" : " votes");
-            let meter = li.querySelector("meter");
-            let perc = (total === 0) ? 0 : (vote / total);
-            meter.value = perc;
-            spans[1].innerHTML = Intl.NumberFormat('pt-br', { style: 'percent' }).format(perc);
+        let out = "";
+        for (let vote of votes) {
+            let key = vote.key;
+            let qtt = vote.votes + ((vote.votes === 1) ? " vote" : " votes");
+            let perc = (total === 0) ? 0 : (vote.votes / total);
+            let percStr = Intl.NumberFormat('pt-br', { style: 'percent' }).format(perc);
+            out += `<tr><td>${key}</td><td><meter min="0" max="1" value="${perc}">&nbsp;</meter></td><td>${percStr}</td><td>${qtt}</td></tr>`;
         }
+        this.output.tBodies[0].innerHTML = out;
         document.getElementById("total").innerHTML = total;
         if (total > 0) {
             this.showTable(true);
@@ -76,18 +75,12 @@ class GUI {
         }
     }
     populateOptions(items) {
-        let ulInput = document.querySelector("#input ul");
-        let ulOutput = document.querySelector("#output ul");
+        let input = document.querySelector("#input ul");
         let lii = "";
-        let lio = "";
         for (let item of items) {
             lii += `<li><input type="radio" name="key" value="${item.key}" /> ${item.key}</li>`;
-            lio += `<li>${item.key} &ndash; <span class="voto">0 votes</span><br />
-                    <meter min="0" max="1" value="0">&nbsp;</meter> <span class="percent">0 %</span>
-                </li>`;
         }
-        ulInput.innerHTML = lii;
-        ulOutput.innerHTML = lio;
+        input.innerHTML = lii;
     }
     getKeys() {
         if (this.type === Type.FETCH) {

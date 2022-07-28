@@ -18,13 +18,24 @@
             </ul>
             <input type="submit" value="Submit" /> <input type="button" value="Results" id="results" />
         </fieldset>
-        <fieldset id="output">
-            <legend>Results:</legend>
-            <ul>
-            </ul>
-            <p>Number of votes: <span id="total">0</span>.</p>
-            <p><input type="button" value="Vote again" id="voteAgain" /></p>
-        </fieldset>
+        <table id="output">
+            <caption>Survey Results</caption>
+            <thead>
+                <tr>
+                    <th>Option</th>
+                    <th>Progress</th>
+                    <th>% of votes</th>
+                    <th># of votes</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+            <tfoot>
+                <tr>
+                    <th><input type="button" value="Vote again" id="voteAgain" /></th>
+                    <th colspan="3">Number of votes: <span id="total">0</span>.</th>
+                </tr>
+            </tfoot>
+        </table>
     </form>
 </body>
 
