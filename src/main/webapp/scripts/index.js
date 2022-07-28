@@ -1,7 +1,8 @@
 class GUI {
     constructor() {
-        this.type = Type.XHR;
         this.output = document.querySelector("#output");
+        this.first = null;
+        this.again = document.getElementById("voteAgain");
     }
     showTable(result) {
         if (result) {
@@ -23,11 +24,8 @@ class GUI {
         }
         this.output.tBodies[0].innerHTML = out;
         document.getElementById("total").innerHTML = total;
-        if (total > 0) {
-            this.showTable(true);
-        } else {
-            alert("No stored votes!");
-        }
+        this.showTable(true);
+        this.again.focus();
     }
     sendData() {
         window.fetch(`survey`, { method: 'post', body: new FormData(document.forms[0]) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
@@ -47,14 +45,10 @@ class GUI {
             radio.checked = false;
         }
         this.showTable(false);
+        this.first.focus();
     }
     showResults() {
-        let total = parseInt(document.getElementById("total").innerHTML);
-        if (total > 0) {
-            this.showTable(true);
-        } else {
-            window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
-        }
+        window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     populateOptions(items) {
         let input = document.querySelector("#input ul");
@@ -63,6 +57,8 @@ class GUI {
             lii += `<li><input type="radio" name="key" value="${item.key}" /> ${item.key}</li>`;
         }
         input.innerHTML = lii;
+        this.first = document.querySelector("#input li:first-child input");
+        this.first.focus();
     }
     getKeys() {
         window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
@@ -70,8 +66,7 @@ class GUI {
     registerEvents() {
         let form = document.forms[0];
         form.onsubmit = this.validate.bind(this);
-        let again = document.getElementById("voteAgain");
-        again.onclick = this.voteAgain.bind(this);
+        this.again.onclick = this.voteAgain.bind(this);
         let results = document.getElementById("results");
         results.onclick = this.showResults.bind(this);
         this.output.className = "hide";
