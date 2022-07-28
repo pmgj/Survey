@@ -3,6 +3,7 @@ class GUI {
         this.output = document.querySelector("#output");
         this.first = null;
         this.again = document.getElementById("voteAgain");
+        this.interval = null;
     }
     showTable(result) {
         if (result) {
@@ -27,14 +28,14 @@ class GUI {
         this.showTable(true);
         this.again.focus();
     }
-    sendData() {
-        window.fetch(`survey`, { method: 'post', body: new FormData(document.forms[0]) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
+    sendData(formData) {
+        window.fetch(`survey`, { method: 'post', body: formData }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     validate(evt) {
         evt.preventDefault();
         let input = document.querySelector("input[type='radio']:checked");
         if (input !== null) {
-            this.sendData();
+            this.sendData(new FormData(document.forms[0]));
         } else {
             alert("You must choose an option!");
         }
@@ -54,7 +55,7 @@ class GUI {
         let input = document.querySelector("#input ul");
         let lii = "";
         for (let item of items) {
-            lii += `<li><input type="radio" name="key" value="${item.key}" /> ${item.key}</li>`;
+            lii += `<li><input type="radio" id="key" name="key" value="${item.key}" /> ${item.key}</li>`;
         }
         input.innerHTML = lii;
         this.first = document.querySelector("#input li:first-child input");
@@ -63,12 +64,54 @@ class GUI {
     getKeys() {
         window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
     }
+    showSettings() {
+        let dialog = document.querySelector("dialog");
+        dialog.showModal();
+        clearInterval(this.interval);
+    }
+    hideSettings() {
+        let dialog = document.querySelector("dialog");
+        dialog.close();
+        this.first.focus();
+        let checkbox = document.querySelector("input[type='checkbox']");
+        if (checkbox.checked) {
+            let time = document.querySelector("#time");
+            let t = parseInt(time.value);
+            if (t > 0) {
+                this.interval = setInterval(this.vote.bind(this), t * 1000);
+                this.showTable(true);
+            }
+        }        
+    }
+    vote() {
+        let options = document.querySelectorAll("input[name='key']");
+        let key = Math.floor(Math.random() * options.length);
+        let fd = new FormData();
+        fd.append("key", options[key].value);
+        this.sendData(fd);
+    }
+    automaticVote(evt) {
+        let checkbox = evt.target;
+        if (checkbox.checked) {
+            let time = document.querySelector("#time");
+            let t = parseInt(time.value);
+            if (t > 0) {
+                this.interval = setInterval(this.vote.bind(this), t * 1000);
+            }
+        } else {
+            clearInterval(this.interval);
+        }
+    }
     registerEvents() {
         let form = document.forms[0];
         form.onsubmit = this.validate.bind(this);
         this.again.onclick = this.voteAgain.bind(this);
         let results = document.getElementById("results");
         results.onclick = this.showResults.bind(this);
+        let settings = document.querySelector("#settings");
+        settings.onclick = this.showSettings.bind(this);
+        let close = document.querySelector("dialog img");
+        close.onclick = this.hideSettings.bind(this);
         this.output.className = "hide";
         this.getKeys();
     }
