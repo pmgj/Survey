@@ -29,7 +29,9 @@ class GUI {
         this.again.focus();
     }
     sendData(formData) {
-        window.fetch(`survey`, { method: 'post', body: formData }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
+        let myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        window.fetch(`webresources/survey`, { method: 'post', headers: myHeaders, body: JSON.stringify(Object.fromEntries(formData)) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     validate(evt) {
         evt.preventDefault();
@@ -49,7 +51,7 @@ class GUI {
         this.first.focus();
     }
     showResults() {
-        window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
+        window.fetch(`webresources/survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     populateOptions(items) {
         let input = document.querySelector("#input ul");
@@ -62,7 +64,7 @@ class GUI {
         this.first.focus();
     }
     getKeys() {
-        window.fetch(`survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
+        window.fetch(`webresources/survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
     }
     showSettings() {
         let dialog = document.querySelector("dialog");
@@ -81,7 +83,7 @@ class GUI {
                 this.interval = setInterval(this.vote.bind(this), t * 1000);
                 this.showTable(true);
             }
-        }        
+        }
     }
     vote() {
         let options = document.querySelectorAll("input[name='key']");
