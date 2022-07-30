@@ -14,6 +14,15 @@ ul {
     right: 1em;
 }
 
+caption {
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#output {
+    margin: 0em auto;
+}
+
 thead,
 tfoot {
     border-top: 1px solid #111;
@@ -59,4 +68,19 @@ legend {
     position: absolute;
     top: 0;
     right: 0;
+}
+
+#time {
+    width: 5em;
+}
+
+@media (max-width: 360px) {
+    main {
+        width: 95vw;
+    }
+
+    #settings {
+        top: 0em;
+        right: 0em;
+    }
 }
