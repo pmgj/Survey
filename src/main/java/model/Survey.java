@@ -19,4 +19,8 @@ public class Survey {
     public List<Item> getVotes() {
         return votes;
     }
+
+    public int getTotal() {
+        return votes.stream().map(i -> i.getVotes()).reduce(0, (subtotal, element) -> subtotal + element).intValue();
+    }
 }
