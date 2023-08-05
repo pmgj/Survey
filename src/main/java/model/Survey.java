@@ -12,8 +12,10 @@ public class Survey {
     }
     
     public void vote(Item item) {
-        Item temp = votes.stream().filter(i -> i.getKey().equals(item.getKey())).findFirst().orElseThrow();
-        temp.setVotes(temp.getVotes() + 1);
+        Item temp = votes.stream().filter(i -> i.key().equals(item.key())).findFirst().orElseThrow();
+        Item newItem = new Item(temp.key(), temp.votes() + 1);
+        votes.remove(temp);
+        votes.add(newItem);
     }
 
     public List<Item> getVotes() {
@@ -21,6 +23,6 @@ public class Survey {
     }
 
     public int getTotal() {
-        return votes.stream().map(i -> i.getVotes()).reduce(0, (subtotal, element) -> subtotal + element).intValue();
+        return votes.stream().map(i -> i.votes()).reduce(0, (subtotal, element) -> subtotal + element).intValue();
     }
 }
