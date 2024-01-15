@@ -9,11 +9,15 @@ class GUI {
     }
     showTable(result) {
         if (result) {
-            document.getElementById("input").className = "hide";
-            this.output.className = "show";
+            document.getElementById("input").classList.add("hide");
+            document.getElementById("input").classList.remove("show");
+            this.output.classList.add("show");
+            this.output.classList.remove("hide");
         } else {
-            document.getElementById("input").className = "show";
-            this.output.className = "hide";
+            document.getElementById("input").classList.add("show");
+            document.getElementById("input").classList.remove("hide");
+            this.output.classList.add("hide");
+            this.output.classList.remove("show");
         }
     }
     printVotes(list) {
@@ -33,7 +37,7 @@ class GUI {
     sendData(value) {
         this.getVotes(value, obj => {
             this.updateVote({ key: obj.key, votes: obj.votes + 1 });
-        });    
+        });
     }
     validate(evt) {
         evt.preventDefault();
@@ -53,13 +57,18 @@ class GUI {
         this.first.focus();
     }
     populateOptions(items) {
-        let input = document.querySelector("#input ul");
+        let input = document.querySelector("#radios");
         let lii = "";
-        for (let item of items) {
-            lii += `<li><input type="radio" id="key" name="key" value="${item.key}" /> ${item.key}</li>`;
+        for (let [index, item] of items.entries()) {
+            lii += `<div class="form-check">
+                <input class="form-check-input" type="radio" name="key" id="key${index}" value="${item.key}">
+                <label class="form-check-label" for="key${index}">
+                ${item.key}
+                </label>
+            </div>`;
         }
         input.innerHTML = lii;
-        this.first = document.querySelector("#input li:first-child input");
+        this.first = document.querySelector("#radios div:first-child input");
         this.first.focus();
     }
     getKeys() {
@@ -160,7 +169,7 @@ class GUI {
         settings.onclick = this.showSettings.bind(this);
         let close = document.querySelector("dialog img");
         close.onclick = this.hideSettings.bind(this);
-        this.output.className = "hide";
+        this.output.classList.add("hide");
         let openRequest = window.indexedDB.open(this.STORE_NAME, 1);
         openRequest.onupgradeneeded = this.databaseUpgrade.bind(this);
         openRequest.onerror = this.requestError;
