@@ -1,5 +1,6 @@
 class GUI {
     constructor() {
+        this.url = "http://127.0.0.1:3002/survey"
         this.output = document.querySelector("#output");
         this.first = null;
         this.again = document.getElementById("voteAgain");
@@ -31,7 +32,7 @@ class GUI {
     sendData(formData) {
         let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
-        window.fetch(`webresources/survey`, { method: 'post', headers: myHeaders, body: JSON.stringify(Object.fromEntries(formData)) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
+        window.fetch(this.url, { method: 'post', headers: myHeaders, body: JSON.stringify(Object.fromEntries(formData)) }).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     validate(evt) {
         evt.preventDefault();
@@ -51,7 +52,7 @@ class GUI {
         this.first.focus();
     }
     showResults() {
-        window.fetch(`webresources/survey`).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
+        window.fetch(this.url).then(resolve => resolve.json()).then(resolve => this.printVotes(resolve)).catch(error => console.log(error));
     }
     populateOptions(items) {
         let input = document.querySelector("#input ul");
@@ -64,7 +65,7 @@ class GUI {
         this.first.focus();
     }
     getKeys() {
-        window.fetch(`webresources/survey`).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
+        window.fetch(this.url).then(resolve => resolve.json()).then(resolve => this.populateOptions(resolve)).catch(error => console.log(error));
     }
     showSettings() {
         let dialog = document.querySelector("dialog");

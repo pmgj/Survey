@@ -1,6 +1,16 @@
 // server.mjs
 import { createServer } from 'node:http';
 const server = createServer((req, res) => {
+    if(req.method === "GET") {
+        let payload = "";
+        req.on("data", chunk => {
+            payload += chunk.toString();       
+        });
+        req.on("end", () => {
+            res.end(payload);
+        });
+    }
+
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('Hello World!\n');
 });
